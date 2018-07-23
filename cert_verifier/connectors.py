@@ -103,6 +103,7 @@ class BlockchainInfoConnector(TransactionLookupConnector):
     def parse_tx(self, json_response):
         revoked = set()
         script = None
+        time = json_response['time']
         signing_key = json_response['inputs'][0]['prev_out']['addr']
         for o in json_response['out']:
             if int(o.get('value', 1)) == 0:
@@ -113,7 +114,7 @@ class BlockchainInfoConnector(TransactionLookupConnector):
         if not script:
             logging.error('transaction response is missing op_return script: %s', json_response)
             raise InvalidTransactionError('transaction response is missing op_return script' % json_response)
-        return TransactionData(signing_key, script, None, revoked)
+        return TransactionData(signing_key, script, time, revoked)
 
 
 class BlockcypherConnector(TransactionLookupConnector):
